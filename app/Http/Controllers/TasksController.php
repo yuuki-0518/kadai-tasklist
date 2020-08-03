@@ -56,6 +56,8 @@ class TasksController extends Controller
         
         // メッセージを作成
         $task = new Task;
+        // statusも保存対象に含める
+        $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
 
