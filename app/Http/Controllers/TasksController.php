@@ -15,6 +15,23 @@ class TasksController extends Controller
      */
     public function index()
     {
+         $data = [];
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザの投稿の一覧を作成日時の降順で取得
+            $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+
+            $data = [
+                'user' => $user,
+                'microposts' => $microposts,
+            ];
+        }
+
+        // Welcomeビューでそれらを表示
+        return view('welcome', $data);
+        
+        
          // メッセージ一覧を取得
         $tasks = Task::all();
 
@@ -54,6 +71,11 @@ class TasksController extends Controller
             'content' => 'required|max:255',
         ]);
         
+         // 認証済みユーザ（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
+        $request->user()->microposts()->create([
+            'content' => $request->content,
+        ]);
+        
         // メッセージを作成
         $task = new Task;
         // statusも保存対象に含める
@@ -73,6 +95,22 @@ class TasksController extends Controller
      */
     public function show($id)
     {
+         // idの値でユーザを検索して取得
+        $user = User::findOrFail($id);
+
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+
+        // ユーザの投稿一覧を作成日時の降順で取得
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
+
+        // ユーザ詳細ビューでそれらを表示
+        return view('users.show', [
+            'user' => $user,
+            'microposts' => $microposts,
+        ]);
+        
+        
         // idの値でメッセージを検索して取得
         $task = Task::findOrFail($id);
 
@@ -138,6 +176,11 @@ class TasksController extends Controller
         $task = Task::findOrFail($id);
         // メッセージを削除
         $task->delete();
+        
+         // 認証済みユーザ（閲覧者）がその投稿の所有者である場合は、投稿を削除
+        if (\Auth::id() === $micropost->user_id) {
+            $micropost->delete();
+        }
 
         // トップページへリダイレクトさせる
         return redirect('tasks.index');
