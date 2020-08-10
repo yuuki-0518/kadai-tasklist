@@ -32,13 +32,13 @@ class TasksController extends Controller
         return view('welcome', $data);
         
         
-         // メッセージ一覧を取得
-        $tasks = Task::all();
+        //  // メッセージ一覧を取得
+        // $tasks = Task::all();
 
-        // メッセージ一覧ビューでそれを表示
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        // // メッセージ一覧ビューでそれを表示
+        // return view('tasks.index', [
+        //     'tasks' => $tasks,
+        // ]);
     }
 
     /**
@@ -72,22 +72,27 @@ class TasksController extends Controller
         ]);
         
          // 認証済みユーザ（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
-        $request->user()->taasks()->create([
+        $request->user()->tasks()->create([
             'content' => $request->content,
+            'status' =>$request->status,
         ]);
         
-        // 前のURLへリダイレクトさせる
-        return back();
+         // トップページへリダイレクトさせる
+        return redirect('/');
         
-        // メッセージを作成
-        $task = new Task;
-        // statusも保存対象に含める
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
+        // // 前のURLへリダイレクトさせる
+        // return back();
+        
+        // // メッセージを作成
+        // $task = new Task;
+        // // statusも保存対象に含める
+        // $task->status = $request->status;
+        // $task->content = $request->content;
+        // $task->save();
 
-        // トップページへリダイレクトさせる
-        return redirect('tasks.index');
+        
+    //     // トップページへリダイレクトさせる
+    //     return redirect('/');
     }
 
     /**
@@ -114,13 +119,13 @@ class TasksController extends Controller
         ]);
         
         
-        // idの値でメッセージを検索して取得
-        $task = Task::findOrFail($id);
+        // // idの値でメッセージを検索して取得
+        // $task = Task::findOrFail($id);
 
-        // メッセージ詳細ビューでそれを表示
-        return view('tasks.show', [
-            'task' => $task,
-        ]);
+        // // メッセージ詳細ビューでそれを表示
+        // return view('tasks.show', [
+        //     'task' => $task,
+        // ]);
     }
 
     /**
@@ -131,7 +136,7 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-         // idの値でメッセージを検索して取得
+        // idの値でメッセージを検索して取得
         $task = Task::findOrFail($id);
 
         // メッセージ編集ビューでそれを表示
@@ -164,7 +169,7 @@ class TasksController extends Controller
         $task->save();
 
         // トップページへリダイレクトさせる
-        return redirect('tasks.index');
+        return redirect('/');
     }
 
     /**
@@ -188,7 +193,7 @@ class TasksController extends Controller
         // 前のURLへリダイレクトさせる
         return back();
 
-        // トップページへリダイレクトさせる
-        return redirect('tasks.index');
+        // // トップページへリダイレクトさせる
+        // return redirect('/');
     }
 }
