@@ -121,7 +121,7 @@ class TasksController extends Controller
         $task->save();
         
         
-         return redirect('/');
+        return redirect('/');
        
 
     }
@@ -138,8 +138,7 @@ class TasksController extends Controller
             $task->delete();
         }
         
-        // 前のURLへリダイレクトさせる
-        return back();
+        return redirect('/');
 
       
     }
