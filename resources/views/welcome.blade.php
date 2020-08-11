@@ -9,9 +9,9 @@
                         <h3 class="card-title">{{ Auth::user()->name }}</h3>
                     </div>
                 </div>
+            </aside>
             <div class="col-sm-8">
                 @include('tasks.index')
-            </aside>
             </div>
         </div>
     @else
